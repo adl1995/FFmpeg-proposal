@@ -1,8 +1,7 @@
-**HiPS to Py**
+ **FITS image decoder and encoder**
 ==============
 
-> * Organization: OpenAstronomy
-> * Suborganization: Astropy
+> Organization: FFmpeg
 
 Student information
 -------------------
@@ -14,6 +13,7 @@ Student information
 * **IRC (#OpenAstronomy)**: adl1995
 * **Timezone**: UTC +05:00
 * **Blog**: http://adl1995.github.io/
+* **IRC (#ffmpeg-devel):** adeel
 
 ### Academic details ###
 * **University**: National University of Computer and Emerging Sciences, Islamabad
@@ -23,32 +23,34 @@ Student information
 Background
 ------
 
-In my previous semester, I enrolled myself in Digital Image Processing course. During the tenure of this course I implemented filters (Gaussian, Sobel, Prewitt, Laplacian), edge detectors (Canny, Marr Hildreth), morphological operators (Convex hulling, Erosion, Dilation), object detectors (Generalized Hough transform, simple convolution), and seam carvers. These were implemented purely in Python, making no use of any library other than ``Numpy`` and ``Matplotlib``. This attenuated my interest in Computer Vision and I have been an active researcher since then. I have showcased these project on my [GitHub profile](https://github.com/adl1995). The most interesting algorithm I implemented was [Generalized Hough Tranfrom](https://github.com/adl1995/generalised-hough-transform). I was amazed as to how something as simple as an equation of line could lead to detection of objects in images. Although my implementation was only scale invariant, I plan on extending this invariancy to orientation as well. Altough the 'HiPS to Py' project involves Computer Vision concepts at a brief level, building a visualization framework has been my interest for quite some time. 
+In my previous semester, I enrolled myself in Digital Image Processing course. During the tenure of this course I implemented filters (Gaussian, Sobel, Prewitt, Laplacian), edge detectors (Canny, Marr Hildreth), morphological operators (Convex hulling, Erosion, Dilation), object detectors (Generalized Hough transform, simple convolution), and seam carvers. These were implemented purely in Python, making no use of any library other than ``Numpy`` and ``Matplotlib``. This attenuated my interest in Computer Vision and I have been an active researcher since then. I have showcased these project on my [GitHub profile](https://github.com/adl1995). The most interesting algorithm I implemented was [Generalized Hough Tranfrom](https://github.com/adl1995/generalised-hough-transform). I was amazed as to how something as simple as an equation of line could lead to detection of objects in images. Although my implementation was only scale invariant, I plan on extending this invariancy to orientation as well. Even though this project requires to build a FITS image decoder and encoder and has not direct application in computer vision, I still believe that my previous experience will help me get up to speed. 
 
 Apart from this, I have also been a PHP web developer for almost two years, and I have worked on multitude of project ranging for SaaS to e-commerce websites. I work remotely on [Upwork](https://www.upwork.com/freelancers/~018e56b8591046f889) and [Fiverr](https://www.fiverr.com/adl1995). My clients are either IT organizations or independent contractors. I have also worked on web automation and data scraping using ``Selenium`` and ``BeautifulSoup``. Although these skills are not required for this organization and have no direct links in my project, it shows that I am persistent and hard-working. The skills that I acquire are through self learning and consistency. Currently I am building an application using [Google Application Engine](https://github.com/adl1995/zoho-portal).
 
-I started collaborating with Open Source organizations for only about a month now, and my experience has been excellent so far. The mentors have been very kind, welcoming and have provided assistance along the way. Given my background in Computer Vision and being good at problem solving, I firmly believe this prestigious organization and its users will benefit by HiPS client for Python. It would also provide me with a working ground knowledge on Astronomy.
+I started collaborating with Open Source organizations for only about a month now, and my experience has been excellent so far. The mentors have been very kind, welcoming and have provided assistance along the way. Given my background in Computer Vision and being good at problem solving, I firmly believe this prestigious organization and its users will benefit from the FITS client for FFmpeg.
 
 Project Details
 ---------------
 
 ### Mentors ###
-> * [Christoph Deil](https://github.com/cdeil)
-> * [Thomas Boch](https://github.com/tboch)
+> * [Paul B Mahol](https://github.com/richardpl)
+> * [Rostislav Pehlivanov](https://github.com/atomnuker)
 
 ### Abstract ###
-> Design and create a Python client for Hierarchical Progressive Surveys (HiPS). This will enable users to view astronomical figures in an interactive environment, similar to Google Maps. Currently, such clients exist, such as Aladin and Aladin Lite, but they are written in Java and JavaScript, respectively. The goal of this project is to provide similar functionality using Python. The current decision is to work only with HiPS images, but if everything goes well, I wish to work on HiPS catalogues as well. 
+> Design and develop a decoder / encoder for Flexible Image Transport System (FITS) digital file format. Being designed specifically for astronomical purposes, this format supports privision for describing photometric and spatial calibration information. The software would be written in C.
 
 ### Detailed description ###
-Hierarchical progressive surveys (HiPS) utilizes the HEALPix framework for mapping a sphere (in our case, part of a sky) and compiles / transforms it into tiles and pixels. HiPS emphasizes on usability and thus tries to abstract the scientific details (while preserving them). This can be further built upon for statistical analysis of large datasets. For this project, a HiPS Python client is to be implemented which will enable users to view / explore astronomical figures. HiPS data is stored in the form of catalogues (TSV), or tiles (PNG, JPG, FITS). In the context of this project only tiles are to be retrieved and stitched together to get the final output. Some of the current HiPS clients include Aladin Desktop, Aladin Lite (CDS), MIZAR, ESAsky, and JUDO2. 
 
-The goal of this project would be to create a new HiPS client under ``astropy/hips``. However, this would run purely on Python. The possible **dependencies** for this software are:
+#### Overview of FITS ####
+Flexible Image Transport System (FITS) digital file format was developed by IAU FITS Working Group and was standardised in 1981. This format was designed to provide long-term archival storage. FITS allows to write image metadata in human readable ASCII, this allows users to examine headers of a file of unknown provenance. The keyword / value pairs provide information such as size, origin, coordinates, binary data format, free-form comments, history of the data, and anything else the creator desires.
 
-* Python >= 3.5
-* Astropy
-* Healpy
-* Numpy
-* Retransform
+This file format can also be used for non-images purposes, such as spectra, photon lists, data cubes, or even structured data such as multi-table databases. But, in the context of this project, I will only work with FITS images.
+
+Currently, there are a multitude of options available for viewing FITS images, such as:
+
+* Aladin Lite
+* APLpy
+* GAIA
 
 #### The HEALPix framework ####
 
@@ -61,12 +63,6 @@ HEALPix, an acronym of 'Hierarchical Equal Area isoLatitude Pixelization of a sp
 
 In a nutshell, the pixelization procedure subdivides a spherical sphere in which each pixel is equidistant from the origin - meaning it covers the same surface area. This produces a HEALPix grid, whose interesting property is that pixels are distributed on lines of constant latitude. Due to this iso-latitude distribution of pixels the complexity for computing integrals over each harmonics is N<sup>1/2</sup>.
 
-#### Pixel numbering schemes ####
-
-HEALPix provides two numbering schemes for pixels, namely **RING scheme** and **NESTED scheme**.
-    
-Some alternative tools to HEALPix are Hierarchical Triangular Mesh (HTM) and Tessellated Octahedral Adaptive Subdivision Transform (TOAST).
-
 #### HEALPix coordinate system ####
 HEALPix header files contain one of the following three letters, each depicting the coordinate system being used:
 
@@ -76,13 +72,6 @@ HEALPix header files contain one of the following three letters, each depicting 
 
 HiPS uses the Celestial coordinate system by default. Also, HiPS does not support Ecliptic coordinate system.
 
-#### HiPS pixels, tiles and file structuring scheme ####
-The multi-resolution representation of original images provides the basis for visualizing data in a progressive way as the pixels that are required for a given view can be accessed through pre-computed HEALPix maps, and the nested pixel numbering scheme provides a simple hierarchical indexing system that encodes pixel inheritance across different orders.
-
-As it is cumbersome to transfer each pixel (essentially a file), HiPS scheme groups pixels in different tiles. The general relationship between tiles and pixels is that a tile with n-tile pixels along each side forms a HEALPix mesh of order of k-tile.
-
-In HiPS, tiles store map information from HEALPix. These tiles are presented as square arrays and it is possible to store them in multiple file formats. Focusing on simplicity and usability, the description of arrays stored in files are straightforward with all the array positions being filled. The files are organized in different directories. Here, tiles are used as files and tile orders are used for grouping data in directories - all following a naming convention. For more information on the method of storing files, [this](http://aladin.unistra.fr/hips/hipsdoc.pdf) document can be viewed, written by Pierre Fernique.
-
 #### HiPS images & catalogues ####
 The way HiPS represents images is by resampling them on a HEALPix grid at the maximum desired order, say k<sup>max</sup>. Then it generates tile images for tile orders. When mosaicking / stitching images, the angular resolution is taken into account. There are various methods for filling the data region when stitching images and dealing with background difference. The k<sup>max</sup> chosen earlier determines minimum pixel size which is near to the angular pixel size or the resolution of original data.
 
@@ -90,71 +79,73 @@ Next important thing is whether to emphasize on ``display quality`` or ``photome
 
 HiPS generation for huge amounts of data such as the Hubble Space Telescope requires planning of system growth.
 
-The same ways a tile in HiPS image survey contains a 512x512 image, a tile catalogue contains the RA / DEC coordinates stored in a TSV file. The data is ASCII tab separated and is organized in various directories the same way as HiPS images. 
-
-##### Approach #####
-For a world coordinate system and an image with dimensions ``(x * y)``, I will create a numpy array with the image by fetching tiles and projecting them onto this image array. There will be lower-level functionality, like fetching tiles.
-
-The repository where the code will reside is already set up (https://github.com/tboch/hips). I will create Pull Requests of the code I write, which will be verified by the mentors. The project will be set up by the mentors as well.
+The same way a tile in HiPS image survey contains a 512x512 image, a tile catalogue contains the RA / DEC coordinates stored in a TSV file. The data is ASCII tab separated and is organized in various directories the same way as HiPS images. 
 
 ## Benefits ##
-HiPS addresses the challenge of big data in astronomy. It describes data in a multi-resolution manner, so it effectively creates an ease in its access. It can also be utilized for data sharing and interoperability. HiPS provides a means for conserving scientific details of astronomical data. MOC maps generated using HiPS facilitate the comparison of sky region between different data sets, and can be used to establish regions of intersection between multiple surveys. It helps to avoid complex queries on database through the initial first response.
+This project would allow FFmpeg to extend its services to astronomical domain. It would add support for decoding and encoding FITS images from through the command line interface.
 
-Current progress
+Qualification task
 ---------
-I wrote a Python script which fetches HiPS tiles and displays them using ``Matplotlib``. The calculation of ``Norder``, ``Npixels``, and ``Nside`` was done using ``Healpy``. The retrieved image was then bytes decoded using the ``BytesIO`` library.
+I frequently conversed with Paul B Mahol, the mentor of this project on the ``#ffmpeg-devel`` IRC channel. He assigned me with the qualification task to decode an XPM (X PixMap) image in ``libavcodec``. The work revolved around working with a patch (https://ffmpeg.org/pipermail/ffmpeg-devel/2012-June/126476.html). It contained incomplete code for encoding an XPM image. This had to be transformed for decoding. After this, support for >256 colors had to be added. For this characters per pixels ``cpp`` had to be set to 3. The pixel format also had to be modified to ``AV_PIX_FMT_RGBA``, as this provides an extra channel.
 
-Another script I wrote retrieved a HiPS tile in JPG format and wrote it as a FITS map. This was achieved using Astropy's ``astropy.writeto`` method. The transformation / mapping of Geocentric coordinates onto a HiPS pixel was achieved using this
-```python
-theta, phi = hp.vec2ang(geocentric_coords)
-```
-Utilizing ``theta`` and ``phi`` the pixel number was found
-```python
-npixel = hp.ang2pix(nside, theta, phi)
-```
-After going through all conversions and successfully writing a FITS map, I then loaded it using ``astropy.io.fits.open`` function.
+I made numerous commits on my local fork of ``FFmpeg`` (https://github.com/adl1995/FFmpeg/commits/new_branch).
 
-As multiple tiles have to be fetched for time efficiency, concurrency has to be achieved. So, I wrote another script utilizing Python's ``threading`` library. The elapsed time was calculated using ``time``. For fetching the tiles ``urllib``, ``grequests``, ``aiohttp``, ``asyncio`` were used.
+To make the code generic and to allocate memory accordingly for ``cpp =  1, 2, or 3``, I wrote this piece of code
 
-For fetching 10 tiles, it took the following mentioned time (in seconds):
-```python
-Elapsed Time URLLib (without concurrency): 3.5430831909179688
-Elapsed Time URLLib (with concurrency): 0.388397216796875
-Elapsed Time URLLib (with aiohttp): 0.3900480270385742
-Elapsed Time GRequests: 1.6238431930541992
+```c
+size = 1;
+for (j = 0; j < cpp; ++j)
+{
+  t = 94;
+  for (k = j; k > 0; --k)
+  t *= t; 
+  size += t; 
+}
 ```
 
-Similarly, For fetching 100 tiles, it took the following mentioned time (in seconds):
-```python
-Elapsed Time URLLib (without concurrency): 37.7027428150177
-Elapsed Time URLLib (with concurrency): 5.575664043426514
-Elapsed Time URLLib (with aiohttp): 2.4697625637054443
-Elapsed Time GRequests: 4.273705244064331
+Finally a check had to be added to verify if the characters in pixel were supported or not.
+
+```c
+av_log(avctx, AV_LOG_ERROR, "unsupported number of chars per pixel\n");
 ```
 
-The pros of ``grequests`` is that it takes less time when large number of requests have to be sent. But, ``urllib`` (with threading) givesbetter reponse time when requests are numerous. 
+The next step was to deal with C styled comments in the ``.xpm`` file. Comments could be either multiline ``/**/`` or single line ``//``. I wrote a function utilizing the ``strcspn`` method for skipping specific patterns.
 
-Using ``aiohttp`` with ``asyncio`` seems to be the best option. It's response time is almost 50% less than ``grequests``.
+```c
+static size_t skip_chars_comments(uint8_t **cpixel, char *delimiter)
+{
+    int len;
 
-Apart from this, I downloaded the Aladin desktop application and examined its various functionalities. It offers a tool for enabling HEALPix grid on the currently displayed image. This helped me better understand how to the grid gets divided at different zoom levels, and the relation between order and pixel numbers.
+    len = strcspn(*cpixel, delimiter) + 1;
 
-Deliverables
----------
+    *cpixel += strcspn(*cpixel, "//");
+    *cpixel += strcspn(*cpixel, "\n");
+    *cpixel += strcspn(*cpixel, "/*");
+    *cpixel += strcspn(*cpixel, "*/");
 
-Development environment
----------
+    return len;
+}
+```
+
+For testing purposes I used ``GIMP`` to a ``2048x1356`` image to ``XPM`` format. Afterwards, I used ffplay to decoded the image
+
+```bash
+./ffplay  ~/Desktop/screen.xpm
+```
+
+The image was now decoded, however, the alignment was a bit skewed.
 
 ## Timeline ##
 
 | Time Period        | Plan           |
 | ------------- | ------------- |
-| May 04, 2017 - May 30, 2017 **(Community Bonding Period)**      |   <ul><li>Discuss with mentors on which Python package to use for GUI implementation, for example ``PyQt`` (if possible).</li><li>Discuss on what pattern should be followed for extracting documentation using an automated tool ``Sphinx``.</li></ul>|
+| May 04, 2017 - May 30, 2017 **(Community Bonding Period)**      |   <ul><li>Finalize on the deliverables.</li><li>Discuss with mentors and get a final idea on how to approach the problem.</li></ul>|
 | | **Part 1 starts** |
 | May 30, 2017 - June 15, 2017 ( 2 weeks ) | <ul><li>Write a skeleton layout of the algorithm / code to implement.</li></ul> |
-| June 16, 2017 - June 30, 2017 ( 2 weeks ) | <ul><li>Document and write test cases for the added part.</li><li>**Update 1 : Push code so it is possible to view images on  providing coordinates.**</li></ul>|
+| June 16, 2017 - June 30, 2017 ( 2 weeks ) | <ul><li>Document and write test cases for the added part.</li><li>**Update 1 : Push code.**</li></ul>|
 | | **Part 1 completed**<br />**Part 2 starts** |
-| July 01, 2017 - July 14, 2017 ( 2 weeks ) | <ul><li>Link the implemented part with GU interface.</li><li>Add functionality that enables user to apply filters on images for better results.</li></ul> |
-| July 15, 2017 - July 28, 2017 ( 2 weeks ) | <ul><li>Add optimizations, write test cases.</li><li>Add support for HiPS catalogues (to be discussed).</li></ul> |
+| July 01, 2017 - July 14, 2017 ( 2 weeks ) | <ul><li>Add test cases and complete decoding functionality.</li></ul> |
+| July 15, 2017 - July 28, 2017 ( 2 weeks ) | <ul><li>Add optimizations, write test cases.</li><li>Add support for FITS image encoding.</li></ul> |
 | | **Part 2 completed** |
 | August 21, 2017 - August 29, 2017 **(Students Submit Code and Evaluations)** | <ul><li>Clean up code.</li><li>Improve documentation.</li><li>Add further test cases.</li><li>Code refactoring (if required).</li><li>Resolve merge conflicts (if any).</li></ul> |
 | August 29, 2017 - September 05, 2017 | Mentors submit final student evaluations. |
@@ -163,3 +154,4 @@ Development environment
 ## Availability ##
 
 My final exams end on May 20<sup>th</sup>. So, I will have ample time for the community bonding period. After that, I will be free during the whole summer i.e. almost three months. I do not have any other commitments, so I can focus all my attention to GSoC.
+
